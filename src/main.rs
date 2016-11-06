@@ -6,17 +6,19 @@
 extern crate clap;
 extern crate log;
 extern crate env_logger;
-// #[cfg(feature = "cbor")]
-// extern crate serde_cbor;
-#[cfg(feature = "json")]
-extern crate serde_json;
-#[cfg(feature = "yaml")]
-extern crate serde_yaml;
-#[cfg(feature = "toml-io")]
-extern crate toml;
-// #[cfg(feature = "cbor")]
-// extern crate rustc_serialize;
 extern crate tokei;
+
+
+#[cfg(feature = "io")]
+extern crate serde_cbor;
+#[cfg(feature = "io")]
+extern crate serde_json;
+#[cfg(feature = "io")]
+extern crate serde_yaml;
+#[cfg(feature = "io")]
+extern crate toml;
+#[cfg(feature = "io")]
+extern crate rustc_serialize;
 
 use std::borrow::Cow;
 #[cfg(feature = "io")]
@@ -28,8 +30,8 @@ use std::sync::mpsc::channel;
 use clap::App;
 use log::LogLevelFilter;
 use env_logger::LogBuilder;
-// #[cfg(feature = "cbor")]
-// use rustc_serialize::hex::FromHex;
+#[cfg(feature = "io")]
+use rustc_serialize::hex::FromHex;
 
 use tokei::{Languages, Language, LanguageType};
 use tokei::Sort::*;
@@ -211,7 +213,7 @@ fn main() {
 }
 
 
-#[cfg(feature = "all")]
+#[cfg(feature = "io")]
 fn add_input(input: &str, languages: &mut Languages) {
     use std::fs::File;
     use std::io::Read;
@@ -254,7 +256,7 @@ fn add_input(input: &str, map: &mut Languages) -> ! {
 
 /// This originally  too a &[u8], but the u8 didn't directly correspond with the hexadecimal u8, so
 /// it had to be changed to a String, and add the rustc_serialize dependency.
-#[cfg(feature = "all")]
+#[cfg(feature = "io")]
 pub fn convert_input(contents: String) -> Option<BTreeMap<LanguageType, Language>> {
     if contents.is_empty() {
         None
@@ -269,7 +271,7 @@ pub fn convert_input(contents: String) -> Option<BTreeMap<LanguageType, Language
     }
 }
 
-#[cfg(feature = "all")]
+#[cfg(feature = "io")]
 fn match_output(format: &str, languages: &Languages) {
     match format {
         "cbor" => {
